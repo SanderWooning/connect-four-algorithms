@@ -75,6 +75,9 @@ class ConnectFour:
 
     def get_available_moves(self) -> typing.List[typing.Tuple[int, int]]:
         """
+        Goal:
+            Return a list with all possible moves in tuples.
+
         Steps:
             1. Initiate an empty list where to put the ID's into
             2. Start a loop over all the columns by utilising the width of the board.
@@ -89,9 +92,9 @@ class ConnectFour:
         starting_list = []
 
         for i in range(self.width):
-            for j in range(self.height -1, 0, -1):
+            for j in range(self.height - 1, 0, -1):
                 if self.board[i][j] == 0:
-                    starting_list.append((j,i))
+                    starting_list.append((j, i))
                     break
 
         return starting_list
@@ -99,10 +102,16 @@ class ConnectFour:
     def is_horizontal_win(self, player: int) -> bool:
 
         """
-        Steps:
-            1. Iterate over
+        Goal:
+            Check whether there are 4 connected discs for the given player horizontally
 
-        Check whether there are 4 connected discs for the given player horizontally
+        Steps:
+            1. Iterate over all rows. This is where the horizontal
+            2. Iterate of all the elements in the row
+            3. Find the first elementent that matches our player
+            4. If it matches, counter increases.
+            5. Check if counter has reached the value of 4.
+            5. If next element is not our players, reset counter. Else increase.
 
         :param player: The player for which we check whether there is a horizontal win
 
@@ -115,16 +124,12 @@ class ConnectFour:
             for j in range(self.width):
                 if self.board[i][j] == player:
                     counter += 1
-
-            if counter == 4:
-                return True
+                    if counter == 4:
+                        return True
+                else:
+                    counter = 0
 
         return False
-
-
-
-
-
 
     def is_vertical_win(self, player: int) -> bool:
         """
