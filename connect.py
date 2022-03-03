@@ -1,7 +1,6 @@
 import typing
 import numpy as np
 
-
 # Codes that we use. DO NOT CHANGE THESE.
 RED = 1
 BLUE = 2
@@ -15,7 +14,6 @@ class ConnectFour:
     def __init__(self, width: int, height: int):
         """
         The ConnectFour object, containing all information and functions required for the assignment
-
         :param width: The width of the rectangular board
         :param height: The height of the board
         """
@@ -27,85 +25,177 @@ class ConnectFour:
 
     def print_board(self) -> None:
         """
-        Prints the board in human readable format
+        Print the board in human readable format in the terminal.
+        Where red is O and blue is X.
+        :return:
         """
 
-        raise NotImplementedError()
+        print("")
+        for i in range(self.height):
+            for j in range(self.width):
 
-    
+                print("|", end="")
+
+                if self.board[i][j] == 0:
+                    print('\033[0m' + "    " + '\033[0m', end="")
+
+                if self.board[i][j] == 1:
+                    print('\33[41m' + "REDD" + '\033[0m', end="")
+
+                if self.board[i][j] == 2:
+                    print('\33[44m' + "BLUE" + '\033[0m', end="")
+
+                if j == (self.height - 1):
+                    print("|")
+
+        return self.board
+
     def place_disc(self, row_idx: int, col_idx: int, player: int) -> None:
-        """
-        Place a disc of the current player on the given location, assuming that it is a legal move 
-        (this legality check should be done in a different function)
 
+        """
+        Place a disc of the current player on the given location, assuming that it is a legal move
+        (this legality check should be done in a different function)
         :param row_idx: The row id (0 = top, self.height-1 = bottom)
         :param col_idx: The column id (0 = leftmost, self.width-1 = rightmost)
         :param player: The player to make the move
         """
 
-        raise NotImplementedError()
-    
+        self.board[row_idx][col_idx] = player
 
-    def get_available_moves(self) -> typing.List[typing.Tuple[int,int]]:
+        return self.board
+
+    def is_legal(self, row_idx: int, col_idx: int) -> bool:
+        if self.board[row_idx][col_idx] == 0:
+            return True
+        else:
+            return False
+
+    def get_available_moves(self) -> typing.List[typing.Tuple[int, int]]:
         """
-        Returns a list of legal moves   
-
+        Goal:
+            Return a list with all possible moves in tuples.
+        Steps:
+            1. Initiate an empty list where to put the ID's into
+            2. Start a loop over all the columns by utilising the width of the board.
+            3. Start a reverse loop over the height of the column.
+            4. Find the first empty spot in the column
+            5. Append the list with ID's
+            6. Then break off the loop, because it is the only legal move in that column.
         :return: The list of move tuples (row id, column id)
         """
+        starting_list = []
 
-        raise NotImplementedError()
+        for i in range(self.width):
+            for j in range(self.height - 1, 0, -1):
+                if self.board[i][j] == 0:
+                    starting_list.append((j, i))
+                    break
 
+        return starting_list
 
     def is_horizontal_win(self, player: int) -> bool:
+
         """
-        Check whether there are 4 connected discs for the given player horizontally
-
+        Goal:
+            Check whether there are 4 connected discs for the given player horizontally
+        Steps:
+            1. Iterate over all rows. This is where the horizontal
+            2. Iterate of all the elements in the row
+            3. Find the first elementent that matches our player
+            4. If it matches, counter increases.
+            5. Check if counter has reached the value of 4.
+            5. If next element is not our players, reset counter. Else increase.
         :param player: The player for which we check whether there is a horizontal win
-
         :return: True if the player has 4 horizontally connected discs else False
         """
 
-        raise NotImplementedError()
+        for i in range(self.height):
+            horizontal_counter = 0
+            for j in range(self.width):
+                if self.board[i][j] == player:
+                    horizontal_counter += 1
+                    if horizontal_counter == 4:
+                        return True
+                else:
+                    horizontal_counter = 0
 
-    
-    def is_vertical_win(self, player: int) -> bool: 
+        return False
+
+    def is_vertical_win(self, player: int) -> bool:
         """
-        Check whether there are 4 connected discs for the given player vertically
+        Goal:
+            Check whether there are 4 connected discs for the given player vertically
 
+        Steps:
         :param player: The player for which we check whether there is a vertical win
-
         :return: True if the player has 4 vertically connected discs else False
         """
 
-        raise NotImplementedError()
-    
+
+        self.print_board()
+
+        for i in range(self.width):
+            vertical_counter = 0
+            for j in range(self.height):
+                if self.board[j][i] == player:
+                    vertical_counter += 1
+                    if vertical_counter == 4:
+                        return True
+                else:
+                    vertical_counter = 0
+
+        return False
+
     def is_diagonal_win(self, player: int) -> bool:
+
+
+        for i in range(self.width - 3):
+            empty_list = []
+            diagonal_counter = 0
+            for j in range(self.width):
+                if self.board[j+i][j+i] == player:
+                    diagonal_counter += 1
+                    if diagonal_counter == 4:
+                        return True
+                empty_list.append(self.board[j+i][j+i])
+
+            print(empty_list)
+
         """
         Check whether there are 4 connected discs for the given player diagonally
-
         :param player: The player for which we check whether there is a diagonal win
-
         :return: True if the player has 4 diagonal connected discs else False
         """
-        
+        return True
+
         raise NotImplementedError()
-        
-    
+
     def has_player_won(self, player: int) -> bool:
+
         """
         Check whether the given player has won
-
         :param player: The player for which we check whether there is a win
-
-        :return: True if the player has won else False 
+        :return: True if the player has won else False
         """
+        self.print_board()
+        if self.is_horizontal_win(player=player) or self.is_vertical_win(player=player) or self.is_diagonal_win(player=player):
+            return True
+        else:
+            return False
+
+
 
         raise NotImplementedError()
 
     def get_game_status(self) -> int:
+
+        if len(self.get_available_moves()) == 0:
+            return DRAW
+        if len(self.get_available_moves()) != 0:
+            return IN_PROGRESS
+
         """
         Returns the status of the game (inprogress, draw, win for blue, win for red)
-
         :return: one of the following:
                 - IN_PROGRESS if the game is in progress
                 - DRAW if the game ended in a draw
@@ -115,19 +205,16 @@ class ConnectFour:
 
         raise NotImplementedError()
 
-
     def can_player_win(self, player: int) -> bool:
         """
-        Recursive function that checks whether the given player (who is also to move) 
+        Recursive function that checks whether the given player (who is also to move)
         can win from the current board position given by self.board.
         Refer to the assignment text for the exact winning criterion (not the default one!).
-
         :return: True if the player can win, False otherwise
         """
-        
+
         raise NotImplementedError()
 
-    
     def best_move_greedy(self, player: int) -> typing.Tuple[int, int]:
         """
         OPTIONAL. Design a greedy function to determine the best move to play. This
@@ -135,10 +222,9 @@ class ConnectFour:
         which of the moves seems good, without looking further ahead. A logical
         greedy approach would be to the following:
          - if we can win in one move, play that move
-         - else, play our opponent's best move (the one maximizing the chain length of the opponent's color) 
-        This way, the opponent can hopefully not win, and we win if we can in 1 move. It may be a good idea to formulate 
+         - else, play our opponent's best move (the one maximizing the chain length of the opponent's color)
+        This way, the opponent can hopefully not win, and we win if we can in 1 move. It may be a good idea to formulate
         new functions that are slight alterations of, e.g., is_horizontal_win, is_vertical_win, and is_diagonal_win.
-
         :return: The best move according to the function in the form (row_id, col_id)
         """
 
