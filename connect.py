@@ -1,6 +1,5 @@
 import typing
 import numpy as np
-import sys
 
 # Codes that we use. DO NOT CHANGE THESE.
 RED = 1
@@ -55,7 +54,6 @@ class ConnectFour:
 
     def place_disc(self, row_idx: int, col_idx: int, player: int) -> None:
 
-        print(self.is_legal(row_idx=row_idx, col_idx=col_idx))
         """
         Place a disc of the current player on the given location, assuming that it is a legal move 
         (this legality check should be done in a different function)
@@ -65,7 +63,9 @@ class ConnectFour:
         :param player: The player to make the move
         """
 
-        raise NotImplementedError()
+        self.board[row_idx][col_idx] = player
+
+        return self.board
 
     def is_legal(self, row_idx: int, col_idx: int) -> bool:
         if self.board[row_idx][col_idx] == 0:
@@ -75,15 +75,33 @@ class ConnectFour:
 
     def get_available_moves(self) -> typing.List[typing.Tuple[int, int]]:
         """
-        Returns a list of legal moves   
+        Steps:
+            1. Initiate an empty list where to put the ID's into
+            2. Start a loop over all the columns by utilising the width of the board.
+            3. Start a reverse loop over the height of the column.
+            4. Find the first empty spot in the column
+            5. Append the list with ID's
+            6. Then break off the loop, because it is the only legal move in that column.
+
 
         :return: The list of move tuples (row id, column id)
         """
+        starting_list = []
 
-        raise NotImplementedError()
+        for i in range(self.width):
+            for j in range(self.height -1, 0, -1):
+                if self.board[i][j] == 0:
+                    starting_list.append((j,i))
+                    break
+
+        return starting_list
 
     def is_horizontal_win(self, player: int) -> bool:
+
         """
+        Steps:
+            1. Iterate over
+
         Check whether there are 4 connected discs for the given player horizontally
 
         :param player: The player for which we check whether there is a horizontal win
@@ -91,7 +109,22 @@ class ConnectFour:
         :return: True if the player has 4 horizontally connected discs else False
         """
 
-        raise NotImplementedError()
+        self.print_board()
+        for i in range(self.height):
+            counter = 0
+            for j in range(self.width):
+                if self.board[i][j] == player:
+                    counter += 1
+
+            if counter == 4:
+                return True
+
+        return False
+
+
+
+
+
 
     def is_vertical_win(self, player: int) -> bool:
         """
