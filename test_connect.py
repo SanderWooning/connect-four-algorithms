@@ -108,6 +108,18 @@ class TestCF(unittest.TestCase):
         self.assertTrue(cf.is_diagonal_win(RED))
         self.assertFalse(cf.is_diagonal_win(BLUE))
 
+    def test_is_diag_win_5x5(self):
+        cf = ConnectFour(5,5)
+        cf.board = np.array([[RED, 0, 0, RED, 0],
+                             [RED, RED, RED, 0, 0],
+                             [RED, RED, BLUE, 0, 0],
+                             [RED, RED, RED, RED, 0],
+                             [RED, RED, BLUE, BLUE, BLUE],
+                             ])
+
+        self.assertTrue(cf.is_diagonal_win(RED))
+        self.assertFalse(cf.is_diagonal_win(BLUE))
+
 
     def test_has_player_won(self):
         # diagonal win for red

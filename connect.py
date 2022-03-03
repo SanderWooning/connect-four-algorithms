@@ -143,7 +143,6 @@ class ConnectFour:
         :return: True if the player has 4 vertically connected discs else False
         """
 
-
         self.print_board()
 
         for i in range(self.width):
@@ -158,12 +157,14 @@ class ConnectFour:
 
         return False
 
+    def check_diag_win(self, array, player):
+        for c in range(self.width - 3):
+            for r in range(self.height - 3):
+                if array[r][c] == player and array[r + 1][c + 1] == player and array[r + 2][
+                    c + 2] == player and array[r + 3][c + 3] == player:
+                    return True
+
     def is_diagonal_win(self, player: int) -> bool:
-
-        self.print_board()
-
-        print([self.board[i][i] for i in range(len(self.board))])
-        print([self.board[i][len(self.board)-1-i] for i in range(len(self.board))])
 
         """
         Check whether there are 4 connected discs for the given player diagonally
@@ -173,20 +174,47 @@ class ConnectFour:
         :return: True if the player has 4 diagonal connected discs else False
         """
 
+        if self.check_diag_win(array=self.board, player=player) \
+                or self.check_diag_win(array=np.fliplr(self.board),player=player):
+            return True
+        else:
+            return False
+
+
         raise NotImplementedError()
 
     def has_player_won(self, player: int) -> bool:
+
         """
         Check whether the given player has won
 
         :param player: The player for which we check whether there is a win
 
-        :return: True if the player has won else False 
+        :return: True if the player has won else False
         """
+
+        if self.is_vertical_win(player=player) \
+            or self.is_horizontal_win(player=player) \
+            or self.is_diagonal_win(player=player):
+            return True
+        else:
+            return False
+
+
 
         raise NotImplementedError()
 
     def get_game_status(self) -> int:
+
+        if self.has_player_won(RED):
+            return RED_WIN
+        if self.has_player_won(BLUE):
+            return BLUE_WIN
+        if len(self.get_available_moves()) == 0:
+            return DRAW
+        else:
+            return IN_PROGRESS
+
         """
         Returns the status of the game (inprogress, draw, win for blue, win for red)
 
