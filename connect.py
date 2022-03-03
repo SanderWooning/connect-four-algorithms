@@ -118,29 +118,47 @@ class ConnectFour:
         :return: True if the player has 4 horizontally connected discs else False
         """
 
-        self.print_board()
         for i in range(self.height):
-            counter = 0
+            horizontal_counter = 0
             for j in range(self.width):
                 if self.board[i][j] == player:
-                    counter += 1
-                    if counter == 4:
+                    horizontal_counter += 1
+                    if horizontal_counter == 4:
                         return True
                 else:
-                    counter = 0
+                    horizontal_counter = 0
 
         return False
 
     def is_vertical_win(self, player: int) -> bool:
         """
-        Check whether there are 4 connected discs for the given player vertically
+        Goal:
+            Check whether there are 4 connected discs for the given player vertically
+
+        Steps:
+
 
         :param player: The player for which we check whether there is a vertical win
 
         :return: True if the player has 4 vertically connected discs else False
         """
 
-        raise NotImplementedError()
+
+        self.print_board()
+
+        for i in range(self.width):
+            print(i)
+            vertical_counter = 0
+            for j in range(self.height):
+                if self.board[i][j] == player:
+                    vertical_counter += 1
+                    print(vertical_counter)
+                    if vertical_counter == 4:
+                        return True
+                else:
+                    vertical_counter = 0
+
+        return False
 
     def is_diagonal_win(self, player: int) -> bool:
         """
