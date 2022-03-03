@@ -147,12 +147,10 @@ class ConnectFour:
         self.print_board()
 
         for i in range(self.width):
-            print(i)
             vertical_counter = 0
             for j in range(self.height):
-                if self.board[i][j] == player:
+                if self.board[j][i] == player:
                     vertical_counter += 1
-                    print(vertical_counter)
                     if vertical_counter == 4:
                         return True
                 else:
@@ -161,6 +159,12 @@ class ConnectFour:
         return False
 
     def is_diagonal_win(self, player: int) -> bool:
+
+        self.print_board()
+
+        print([self.board[i][i] for i in range(len(self.board))])
+        print([self.board[i][len(self.board)-1-i] for i in range(len(self.board))])
+
         """
         Check whether there are 4 connected discs for the given player diagonally
 
