@@ -14,6 +14,7 @@ class ConnectFour:
     def __init__(self, width: int, height: int):
         """
         The ConnectFour object, containing all information and functions required for the assignment
+
         :param width: The width of the rectangular board
         :param height: The height of the board
         """
@@ -27,10 +28,11 @@ class ConnectFour:
         """
         Print the board in human readable format in the terminal.
         Where red is O and blue is X.
+
+
         :return:
         """
 
-        print("")
         for i in range(self.height):
             for j in range(self.width):
 
@@ -55,6 +57,7 @@ class ConnectFour:
         """
         Place a disc of the current player on the given location, assuming that it is a legal move
         (this legality check should be done in a different function)
+
         :param row_idx: The row id (0 = top, self.height-1 = bottom)
         :param col_idx: The column id (0 = leftmost, self.width-1 = rightmost)
         :param player: The player to make the move
@@ -64,16 +67,11 @@ class ConnectFour:
 
         return self.board
 
-    def is_legal(self, row_idx: int, col_idx: int) -> bool:
-        if self.board[row_idx][col_idx] == 0:
-            return True
-        else:
-            return False
-
     def get_available_moves(self) -> typing.List[typing.Tuple[int, int]]:
         """
         Goal:
             Return a list with all possible moves in tuples.
+
         Steps:
             1. Initiate an empty list where to put the ID's into
             2. Start a loop over all the columns by utilising the width of the board.
@@ -81,15 +79,23 @@ class ConnectFour:
             4. Find the first empty spot in the column
             5. Append the list with ID's
             6. Then break off the loop, because it is the only legal move in that column.
+
+
         :return: The list of move tuples (row id, column id)
         """
         starting_list = []
 
+
         for i in range(self.width):
-            for j in range(self.height - 1, 0, -1):
-                if self.board[i][j] == 0:
-                    starting_list.append((j, i))
+            column = [row[i] for row in self.board]
+            for j in range(self.height, 0, -1):
+                if column[j - 1] == 0:
+                    starting_list.append((j - 1, i))
                     break
+            else:
+                continue
+
+
 
         return starting_list
 
@@ -98,6 +104,7 @@ class ConnectFour:
         """
         Goal:
             Check whether there are 4 connected discs for the given player horizontally
+
         Steps:
             1. Iterate over all rows. This is where the horizontal
             2. Iterate of all the elements in the row
@@ -105,7 +112,9 @@ class ConnectFour:
             4. If it matches, counter increases.
             5. Check if counter has reached the value of 4.
             5. If next element is not our players, reset counter. Else increase.
+
         :param player: The player for which we check whether there is a horizontal win
+
         :return: True if the player has 4 horizontally connected discs else False
         """
 
@@ -127,10 +136,12 @@ class ConnectFour:
             Check whether there are 4 connected discs for the given player vertically
 
         Steps:
+
+
         :param player: The player for which we check whether there is a vertical win
+
         :return: True if the player has 4 vertically connected discs else False
         """
-
 
         self.print_board()
 
@@ -146,39 +157,43 @@ class ConnectFour:
 
         return False
 
+    def check_diag_win(self, array, player):
+        for c in range(self.width - 3):
+            for r in range(self.height - 3):
+                if array[r][c] == player and array[r + 1][c + 1] == player and array[r + 2][
+                    c + 2] == player and array[r + 3][c + 3] == player:
+                    return True
+
     def is_diagonal_win(self, player: int) -> bool:
-
-
-        for i in range(self.width - 3):
-            empty_list = []
-            diagonal_counter = 0
-            for j in range(self.width):
-                if self.board[j+i][j+i] == player:
-                    diagonal_counter += 1
-                    if diagonal_counter == 4:
-                        return True
-                empty_list.append(self.board[j+i][j+i])
-
-            print(empty_list)
 
         """
         Check whether there are 4 connected discs for the given player diagonally
+
         :param player: The player for which we check whether there is a diagonal win
+
         :return: True if the player has 4 diagonal connected discs else False
         """
-        return True
 
-        raise NotImplementedError()
+        if self.check_diag_win(array=self.board, player=player) \
+                or self.check_diag_win(array=np.fliplr(self.board),player=player):
+            return True
+        else:
+            return False
+
 
     def has_player_won(self, player: int) -> bool:
 
         """
         Check whether the given player has won
+
         :param player: The player for which we check whether there is a win
+
         :return: True if the player has won else False
         """
-        self.print_board()
-        if self.is_horizontal_win(player=player) or self.is_vertical_win(player=player) or self.is_diagonal_win(player=player):
+
+        if self.is_vertical_win(player=player) \
+                or self.is_horizontal_win(player=player) \
+                or self.is_diagonal_win(player=player):
             return True
         else:
             return False
@@ -189,19 +204,26 @@ class ConnectFour:
 
     def get_game_status(self) -> int:
 
+        """
+            Returns the status of the game (inprogress, draw, win for blue, win for red)
+
+            :return: one of the following:
+                    - IN_PROGRESS if the game is in progress
+                    - DRAW if the game ended in a draw
+                    - RED_WIN if red won
+                    - BLUE_WIN if blue won
+            """
+
+        if self.has_player_won(RED):
+            return RED_WIN
+        if self.has_player_won(BLUE):
+            return BLUE_WIN
         if len(self.get_available_moves()) == 0:
             return DRAW
-        if len(self.get_available_moves()) != 0:
+        else:
             return IN_PROGRESS
 
-        """
-        Returns the status of the game (inprogress, draw, win for blue, win for red)
-        :return: one of the following:
-                - IN_PROGRESS if the game is in progress
-                - DRAW if the game ended in a draw
-                - RED_WIN if red won
-                - BLUE_WIN if blue won
-        """
+
 
         raise NotImplementedError()
 
@@ -210,12 +232,31 @@ class ConnectFour:
         Recursive function that checks whether the given player (who is also to move)
         can win from the current board position given by self.board.
         Refer to the assignment text for the exact winning criterion (not the default one!).
+
         :return: True if the player can win, False otherwise
         """
+
+        available_moves = self.get_available_moves()
+
+        if len(available_moves) > 0:
+            for i in range(len(available_moves)):
+                self.place_disc(row_idx=available_moves[i][0], col_idx=available_moves[i][1], player=player)
+                print(self.board)
+                if self.has_player_won(player=player):
+                    self.place_disc(row_idx=available_moves[i][0], col_idx=available_moves[i][1], player=0)
+                    return True
+                self.place_disc(row_idx=available_moves[i][0], col_idx=available_moves[i][1], player=0)
+
+            return False
+
+
 
         raise NotImplementedError()
 
     def best_move_greedy(self, player: int) -> typing.Tuple[int, int]:
+        if self.can_player_win(player=player):
+            self.place
+
         """
         OPTIONAL. Design a greedy function to determine the best move to play. This
         algorithm involves enumerating all possible moves, and determining
@@ -225,6 +266,7 @@ class ConnectFour:
          - else, play our opponent's best move (the one maximizing the chain length of the opponent's color)
         This way, the opponent can hopefully not win, and we win if we can in 1 move. It may be a good idea to formulate
         new functions that are slight alterations of, e.g., is_horizontal_win, is_vertical_win, and is_diagonal_win.
+
         :return: The best move according to the function in the form (row_id, col_id)
         """
 
