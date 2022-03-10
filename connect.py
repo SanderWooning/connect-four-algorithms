@@ -32,9 +32,10 @@ class ConnectFour:
 
         :return:
         """
-
+        print("")
         for i in range(self.height):
             for j in range(self.width):
+
 
                 print("|", end="")
 
@@ -49,6 +50,7 @@ class ConnectFour:
 
                 if j == (self.height - 1):
                     print("|")
+
 
         return self.board
 
@@ -143,7 +145,6 @@ class ConnectFour:
         :return: True if the player has 4 vertically connected discs else False
         """
 
-        self.print_board()
 
         for i in range(self.width):
             vertical_counter = 0
@@ -175,7 +176,7 @@ class ConnectFour:
         """
 
         if self.check_diag_win(array=self.board, player=player) \
-                or self.check_diag_win(array=np.fliplr(self.board),player=player):
+                or self.check_diag_win(array=np.fliplr(self.board), player=player):
             return True
         else:
             return False
@@ -227,6 +228,13 @@ class ConnectFour:
 
         raise NotImplementedError()
 
+    def invert_player(self, player):
+        if player == RED:
+            return BLUE
+        if player == BLUE:
+            return RED
+
+
     def can_player_win(self, player: int) -> bool:
         """
         Recursive function that checks whether the given player (who is also to move)
@@ -236,26 +244,53 @@ class ConnectFour:
         :return: True if the player can win, False otherwise
         """
 
-        available_moves = self.get_available_moves()
 
-        if len(available_moves) > 0:
-            for i in range(len(available_moves)):
-                self.place_disc(row_idx=available_moves[i][0], col_idx=available_moves[i][1], player=player)
-                print(self.board)
-                if self.has_player_won(player=player):
-                    self.place_disc(row_idx=available_moves[i][0], col_idx=available_moves[i][1], player=0)
+        if self.has_player_won(player= player):
+            return True
+        if self.get_game_status() == DRAW:
+            if player == RED:
+                return True
+            if player == BLUE:
+                return False
+        else:
+            av_moves = self.get_available_moves()
+            for i in range(len(av_moves)):
+                self.print_board()
+                self.place_disc(row_idx=av_moves[i][0], col_idx=av_moves[i][1], player= player)
+                player = self.invert_player(player=player)
+
+                if not self.can_player_win(player=player):
+                    self.place_disc(row_idx=av_moves[i][0], col_idx=av_moves[i][1], player= 0)
                     return True
-                self.place_disc(row_idx=available_moves[i][0], col_idx=available_moves[i][1], player=0)
 
-            return False
+                self.place_disc(row_idx=av_moves[i][0], col_idx=av_moves[i][1], player= 0)
+
+        return False
 
 
 
-        raise NotImplementedError()
+
+
+        # if len(available_moves) > 0:
+        #     for i in range(len(available_moves)):
+        #
+        #         self.place_disc(row_idx=available_moves[i][0], col_idx=available_moves[i][1], player=player)
+        #
+        #         if self.has_player_won(player=player):
+        #
+        #             self.place_disc(row_idx=available_moves[i][0], col_idx=available_moves[i][1], player=0)
+        #             return True
+        #         self.place_disc(row_idx=available_moves[i][0], col_idx=available_moves[i][1], player=0)
+        #
+        #     return False
+
+
+
 
     def best_move_greedy(self, player: int) -> typing.Tuple[int, int]:
-        if self.can_player_win(player=player):
-            self.place
+
+
+
 
         """
         OPTIONAL. Design a greedy function to determine the best move to play. This
