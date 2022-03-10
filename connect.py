@@ -255,15 +255,15 @@ class ConnectFour:
         else:
             av_moves = self.get_available_moves()
             for i in range(len(av_moves)):
-                self.print_board()
-                self.place_disc(row_idx=av_moves[i][0], col_idx=av_moves[i][1], player= player)
-                player = self.invert_player(player=player)
 
-                if not self.can_player_win(player=player):
+                self.place_disc(row_idx=av_moves[i][0], col_idx=av_moves[i][1], player= player)
+
+                if not self.can_player_win(self.invert_player(player)):
                     self.place_disc(row_idx=av_moves[i][0], col_idx=av_moves[i][1], player= 0)
                     return True
 
                 self.place_disc(row_idx=av_moves[i][0], col_idx=av_moves[i][1], player= 0)
+
 
         return False
 
