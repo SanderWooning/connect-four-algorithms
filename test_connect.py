@@ -55,7 +55,19 @@ class TestCF(unittest.TestCase):
         
         # check if not more moves were returned than the real ones
         self.assertTrue(len(all_true_moves) == len(moves))
-    
+
+
+    def test_avail_moves_board(self):
+        cf = ConnectFour(4,4)
+        all_true_moves = [(1,1),(1,2),(3,3)]
+        cf.board = np.array([[RED, 0, 0, 0],
+                             [RED, 0, 0, 0],
+                             [RED, BLUE, BLUE, 0],
+                             [RED, BLUE, BLUE, 0]])
+        self.assertTrue(cf.get_available_moves() == all_true_moves)
+
+
+
 
     def test_is_horizontal_win(self):
         cf = ConnectFour(4,4)

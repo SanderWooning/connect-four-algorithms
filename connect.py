@@ -67,12 +67,6 @@ class ConnectFour:
 
         return self.board
 
-    def is_legal(self, row_idx: int, col_idx: int) -> bool:
-        if self.board[row_idx][col_idx] == 0:
-            return True
-        else:
-            return False
-
     def get_available_moves(self) -> typing.List[typing.Tuple[int, int]]:
         """
         Goal:
@@ -91,11 +85,17 @@ class ConnectFour:
         """
         starting_list = []
 
+
         for i in range(self.width):
-            for j in range(self.height - 1, 0, -1):
-                if self.board[i][j] == 0:
-                    starting_list.append((j, i))
+            column = [row[i] for row in self.board]
+            for j in range(self.height, 0, -1):
+                if column[j - 1] == 0:
+                    starting_list.append((j - 1, i))
                     break
+            else:
+                continue
+
+
 
         return starting_list
 
@@ -194,8 +194,8 @@ class ConnectFour:
         """
 
         if self.is_vertical_win(player=player) \
-            or self.is_horizontal_win(player=player) \
-            or self.is_diagonal_win(player=player):
+                or self.is_horizontal_win(player=player) \
+                or self.is_diagonal_win(player=player):
             return True
         else:
             return False
@@ -206,6 +206,16 @@ class ConnectFour:
 
     def get_game_status(self) -> int:
 
+        """
+            Returns the status of the game (inprogress, draw, win for blue, win for red)
+
+            :return: one of the following:
+                    - IN_PROGRESS if the game is in progress
+                    - DRAW if the game ended in a draw
+                    - RED_WIN if red won
+                    - BLUE_WIN if blue won
+            """
+
         if self.has_player_won(RED):
             return RED_WIN
         if self.has_player_won(BLUE):
@@ -215,26 +225,30 @@ class ConnectFour:
         else:
             return IN_PROGRESS
 
-        """
-        Returns the status of the game (inprogress, draw, win for blue, win for red)
 
-        :return: one of the following:
-                - IN_PROGRESS if the game is in progress
-                - DRAW if the game ended in a draw
-                - RED_WIN if red won
-                - BLUE_WIN if blue won
-        """
 
         raise NotImplementedError()
 
     def can_player_win(self, player: int) -> bool:
         """
-        Recursive function that checks whether the given player (who is also to move) 
+        Recursive function that checks whether the given player (who is also to move)
         can win from the current board position given by self.board.
         Refer to the assignment text for the exact winning criterion (not the default one!).
 
         :return: True if the player can win, False otherwise
         """
+
+        print(len(self.get_available_moves()))
+
+        if len(self.get_available_moves()) > 0:
+            for i in range(len(self.get_available_moves())):
+                check_board = self.board[(self.get_available_moves()[i])]
+                if self.has_player_won(player=player):
+                    return True
+
+        return False
+
+
 
         raise NotImplementedError()
 
