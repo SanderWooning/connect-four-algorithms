@@ -89,7 +89,6 @@ class ConnectFour:
             else:
                 continue
 
-        print(starting_list)
         return starting_list
 
     def is_horizontal_win(self, player: int) -> bool:
@@ -111,17 +110,32 @@ class ConnectFour:
         :return: True if the player has 4 horizontally connected discs else False
         """
 
-        for i in range(self.height):
-            horizontal_counter = 0
-            for j in range(self.width):
-                if self.board[i][j] == player:
-                    horizontal_counter += 1
-                    if horizontal_counter == 4:
-                        return True
-                else:
-                    horizontal_counter = 0
+        # for i in range(self.height):
+        #     horizontal_counter = 0
+        #     for j in range(self.width):
+        #         if self.board[i][j] == player:
+        #             horizontal_counter += 1
+        #             if horizontal_counter == 4:
+        #                 return True
+        #         else:
+        #             horizontal_counter = 0
 
-        return False
+        # return False
+
+        for i in range(self.height):
+            print
+            for j in range(0, self.width - 3):
+                print(j)
+                if self.board[i][j] == player \
+                        and self.board[i][j + 1] == player \
+                        and self.board[i][j + 2] == player  \
+                        and self.board[i][j + 3] == player:
+                    return True
+
+        else:
+            return False
+
+
 
     def is_vertical_win(self, player: int) -> bool:
         """
@@ -136,15 +150,13 @@ class ConnectFour:
         :return: True if the player has 4 vertically connected discs else False
         """
 
-        for i in range(self.width):
-            vertical_counter = 0
-            for j in range(self.height):
-                if self.board[j][i] == player:
-                    vertical_counter += 1
-                    if vertical_counter == 4:
-                        return True
-                else:
-                    vertical_counter = 0
+        for j in range(self.width):
+            for i in range(0, self.height - 3):
+                if self.board[i][j] == player \
+                        and self.board[i + 1][j] == player \
+                        and self.board[i + 2][j] == player \
+                        and self.board[i + 3][j] == player:
+                    return True
 
         return False
 
@@ -156,9 +168,9 @@ class ConnectFour:
             Check if the given array has 4 connected for the given player diagonally
 
         Steps:
-            1. Iterate over
-
-        Check whether there are 4 connected discs for the given player diagonally
+            1. Iterate over all rows which could form a diagonal of length 4.
+            2. Iterate over all columns which could form a diagonal of length 4.
+            3. Check if four connected discs are in the formed diagonal.
 
         :param player: The player for which we check whether there is a diagonal win
 
@@ -172,19 +184,29 @@ class ConnectFour:
                         and array[i + 2][j + 2] == player \
                         and array[i + 3][j + 3] == player:
                     return True
+                
+        return False
 
     def is_diagonal_win(self, player: int) -> bool:
 
         """
-        Check whether there are 4 connected discs for the given player diagonally
+        Goal:
+            "Check whether there are 4 connected discs for the given player diagonally"
+
+        Steps:
+            1. Call funfction check_diag_win() with normal board and vertically mirrored board.
+
+        Additional info:
+            "Function is split up into two "
+
 
         :param player: The player for which we check whether there is a diagonal win
 
-        :return: True if the player has 4 diagonal connected discs else False
+        :return: True if the normal or vertically mirrored board are contain four connected discs.
         """
 
         if self.check_diag_win(array=self.board, player=player) \
-                or self.check_diag_win(array=np.fliplr(self.board), player=player):  # Mirror Matrix vertically
+                or self.check_diag_win(array=np.fliplr(self.board), player=player):  # Mirror Matrix vertically with np.fliplr
             return True
         else:
             return False

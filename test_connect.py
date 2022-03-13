@@ -214,3 +214,27 @@ class TestCF(unittest.TestCase):
         bm2 = cf.best_move_greedy(2)
         self.assertEqual(bm1, (0,0))
         self.assertEqual(bm2, (0,0))
+
+    def test_can_player_win_empty_board(self):
+        cf = ConnectFour(4,4)
+        cf.board = np.array([[0,0,0,0],
+                             [0,0,0,0],
+                             [0,0,0,0],
+                             [0,0,0,0]
+        ])
+
+        self.assertFalse(cf.can_player_win(BLUE))
+        self.assertTrue(cf.can_player_win(RED))
+
+
+    def test_can_player_win_empty_board_5x5(self):
+        cf = ConnectFour(4,5)
+        cf.board = np.array([[0,0,0,0],
+                             [0,0,0,0],
+                             [0,0,0,0],
+                             [0,0,0,0],
+                             [0,0,0,0]
+                             ])
+
+        self.assertFalse(cf.can_player_win(BLUE))
+        self.assertTrue(cf.can_player_win(RED))
