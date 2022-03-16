@@ -45,7 +45,7 @@ class ConnectFour:
                 if self.board[i][j] == 2:
                     print('\33[44m' + "BLUE" + '\033[0m', end="")
 
-                if j == (self.height - 1):
+                if j == (self.width - 1):
                     print("|")
 
     def place_disc(self, row_idx: int, col_idx: int, player: int) -> None:
@@ -99,43 +99,25 @@ class ConnectFour:
 
         Steps:
             1. Iterate over all rows. This is where the horizontal
-            2. Iterate of all the elements in the row
-            3. Find the first element that matches our player
-            4. If it matches, counter increases.
-            5. Check if counter has reached the value of 4.
-            5. If next element is not our players, reset counter. Else increase.
+            2. Iterate of all the elements in the row - 3.
+            3. Check if position until position + 4 all equals player. If True, return True.
+            4. Else return False
 
         :param player: The player for which we check whether there is a horizontal win
 
         :return: True if the player has 4 horizontally connected discs else False
         """
 
-        # for i in range(self.height):
-        #     horizontal_counter = 0
-        #     for j in range(self.width):
-        #         if self.board[i][j] == player:
-        #             horizontal_counter += 1
-        #             if horizontal_counter == 4:
-        #                 return True
-        #         else:
-        #             horizontal_counter = 0
-
-        # return False
-
         for i in range(self.height):
-            print
             for j in range(0, self.width - 3):
-                print(j)
                 if self.board[i][j] == player \
                         and self.board[i][j + 1] == player \
-                        and self.board[i][j + 2] == player  \
+                        and self.board[i][j + 2] == player \
                         and self.board[i][j + 3] == player:
                     return True
 
         else:
             return False
-
-
 
     def is_vertical_win(self, player: int) -> bool:
         """
@@ -143,7 +125,10 @@ class ConnectFour:
             Check whether there are 4 connected discs for the given player vertically
 
         Steps:
-
+            1. Iterate over all rows. This is where the horizontal
+            2. Iterate of all the elements in the row - 3.
+            3. Check if position until position + 4 all equals player. If True, return True.
+            4. Else return False
 
         :param player: The player for which we check whether there is a vertical win
 
@@ -184,7 +169,7 @@ class ConnectFour:
                         and array[i + 2][j + 2] == player \
                         and array[i + 3][j + 3] == player:
                     return True
-                
+
         return False
 
     def is_diagonal_win(self, player: int) -> bool:
@@ -194,19 +179,18 @@ class ConnectFour:
             "Check whether there are 4 connected discs for the given player diagonally"
 
         Steps:
-            1. Call funfction check_diag_win() with normal board and vertically mirrored board.
+            1. Call function check_diag_win() with normal board and vertically mirrored board.
 
         Additional info:
-            "Function is split up into two "
-
+            "Function is split up into two function for not altering the parameters. (Didn't know it was allowed) "
 
         :param player: The player for which we check whether there is a diagonal win
 
         :return: True if the normal or vertically mirrored board are contain four connected discs.
         """
 
-        if self.check_diag_win(array=self.board, player=player) \
-                or self.check_diag_win(array=np.fliplr(self.board), player=player):  # Mirror Matrix vertically with np.fliplr
+        if self.check_diag_win(self.board, player) \
+                or self.check_diag_win(np.fliplr(self.board), player):  # Mirror Matrix vertically with np.fliplr
             return True
         else:
             return False
@@ -215,6 +199,9 @@ class ConnectFour:
 
         """
         Check whether the given player has won
+
+        Steps:
+            1. Call all win-functions (horizontal, diagonal and vertical) and check if any of them are true.
 
         :param player: The player for which we check whether there is a win
 
@@ -248,7 +235,6 @@ class ConnectFour:
             return DRAW
         else:
             return IN_PROGRESS
-
 
     def invert_player(self, player):
         if player == RED:
@@ -300,5 +286,4 @@ class ConnectFour:
 
         :return: The best move according to the function in the form (row_id, col_id)
         """
-
-        raise NotImplementedError()
+        return (0, 0)

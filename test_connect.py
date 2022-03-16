@@ -43,19 +43,6 @@ class TestCF(unittest.TestCase):
         # check if not more moves were returned than the real ones
         self.assertTrue(len(all_true_moves) == len(moves))
 
-    
-    def test_get_available_moves_empty_board(self):
-        cf = ConnectFour(4,4)
-        all_true_moves = [(3,col_idx) for col_idx in range(4)]
-        moves = set(cf.get_available_moves())
-
-        # check if every truly possible move is already returned
-        for true_move in all_true_moves:
-            self.assertTrue(true_move in moves)
-        
-        # check if not more moves were returned than the real ones
-        self.assertTrue(len(all_true_moves) == len(moves))
-
 
     def test_avail_moves_board(self):
         cf = ConnectFour(4,4)
@@ -227,14 +214,3 @@ class TestCF(unittest.TestCase):
         self.assertTrue(cf.can_player_win(RED))
 
 
-    def test_can_player_win_empty_board_5x5(self):
-        cf = ConnectFour(4,5)
-        cf.board = np.array([[0,0,0,0],
-                             [0,0,0,0],
-                             [0,0,0,0],
-                             [0,0,0,0],
-                             [0,0,0,0]
-                             ])
-
-        self.assertFalse(cf.can_player_win(BLUE))
-        self.assertTrue(cf.can_player_win(RED))
