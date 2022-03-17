@@ -176,7 +176,8 @@ class ConnectFour:
         """
 
         if self.check_diag_win(array=self.board, player=player) \
-                or self.check_diag_win(array=np.fliplr(self.board), player=player):  # Mirror Matrix vertically with np.fliplr
+                or self.check_diag_win(array=np.fliplr(self.board),
+                                       player=player):  # Mirror Matrix vertically with np.fliplr
             return True
         else:
             return False
@@ -228,7 +229,6 @@ class ConnectFour:
         else:
             return IN_PROGRESS
 
-
     def invert_player(self, player):
 
         """
@@ -258,7 +258,6 @@ class ConnectFour:
         :return: True if the player can win, False otherwise
         """
 
-
         if self.has_player_won(player=player):
             return True
         if self.get_game_status() == DRAW:
@@ -278,7 +277,6 @@ class ConnectFour:
                 self.place_disc(row_idx=move[0], col_idx=move[1], player=0)
 
         return False
-
 
     def max_horizontal_length(self, player: int, return_moves: bool):
 
@@ -335,8 +333,7 @@ class ConnectFour:
         else:
             return starting_len
 
-
-    def max_diagnonal_length(self, array, player: int, return_move: bool) -> int:
+    def max_diagnonal_length(self, player: int, return_move: bool) -> int:
 
         starting_len = 0
         returning_moves = []
@@ -344,7 +341,7 @@ class ConnectFour:
         for column in range(self.width - 3):
             counting_len = 0
             for row in range(self.height):
-                if array[row][row + column] == player:
+                if self.board[row][row + column] == player:
                     counting_len += 1
 
                     if counting_len == starting_len:
@@ -353,7 +350,26 @@ class ConnectFour:
 
                     if counting_len > starting_len:
                         starting_len = counting_len
-                        returning_moves = [(row + 1, row + column + 1), (row - starting_len, row + column - starting_len)]
+                        returning_moves = [(row + 1, row + column + 1),
+                                           (row - starting_len, row + column - starting_len)]
+
+                else:
+                    counting_len = 0
+
+        for column in range(self.width - 3):
+            counting_len = 0
+            for row in range(self.height):
+                if self.board[row][self.width - 1 - row] == player:
+                    counting_len += 1
+
+                    if counting_len == starting_len:
+                        returning_moves.append((row + 1, row + column + 1))
+                        returning_moves.append((row - starting_len, row + column - starting_len))
+
+                    if counting_len > starting_len:
+                        starting_len = counting_len
+                        returning_moves = [(row + 1, row + column + 1),
+                                           (row - starting_len, row + column - starting_len)]
 
                 else:
                     counting_len = 0
@@ -363,9 +379,6 @@ class ConnectFour:
 
         else:
             return starting_len
-
-
-
 
     def best_move_greedy(self, player: int) -> typing.Tuple[int, int]:
         """
@@ -383,11 +396,11 @@ class ConnectFour:
 
         print(f' Max horizontal length:{player}  {self.max_horizontal_length(player, return_moves=True)}')
         print(f' Max Vertical length: {player} {self.max_vertical_length(player, return_moves=True)}')
-        print(f' Max Diagonal length: {player} {self.max_diagnonal_length(array=self.board, player=player, return_move=True)}')
-        print(f' Max A-Diagonal length: {player} {self.max_diagnonal_length(array=np.fliplr(self.board), player=player, return_move=True)}')
-        print("")
+        print(f' Max Diagonal length: {player} {self.max_diagnonal_length(player=player, return_move=True)}')
 
-        #Check for winning-cases for player
+
+
+        # Check for winning-cases for player
         for move in self.get_available_moves():
             self.place_disc(row_idx=move[0], col_idx=move[1], player=player)
             if self.has_player_won(player=player):
@@ -397,4 +410,9 @@ class ConnectFour:
                 self.place_disc(row_idx=move[0], col_idx=move[1], player=0)
 
 
+        max_length_opponent = max(self.max_horizontal_length(self.invert_player(player), return_moves=False),
+                         self.max_vertical_length(self.invert_player(player), return_moves=False),
+                         self.max_diagnonal_length(self.invert_player(player), return_move=False))
 
+        if self.max_horizontal_length(self.invert_player(player), return_moves=False):
+            return self.max_horizontal_length(self.invert_player(player), return_moves=True)[0]
