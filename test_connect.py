@@ -207,11 +207,11 @@ class TestCF(unittest.TestCase):
         cf = ConnectFour(4,4)
         cf.board=np.array([[0,0,0,0],
                            [0,0,0,0],
-                           [0,0,0,0],
-                           [2,2,2,0]])
+                           [2,1,0,0],
+                           [2,1,0,0]])
         bm1 = cf.best_move_greedy(1)
         bm2 = cf.best_move_greedy(2)
-        self.assertEqual(bm2, (3,3))
+        self.assertEqual(bm2, (1,1))
 
     def test_can_player_win_empty_board(self):
         cf = ConnectFour(4,4)

@@ -333,7 +333,7 @@ class ConnectFour:
         else:
             return starting_len
 
-    def max_diagnonal_length(self, player: int, return_move: bool) -> int:
+    def max_diagnonal_length(self, player: int, return_move: bool):
 
         starting_len = 0
         returning_moves = []
@@ -398,8 +398,6 @@ class ConnectFour:
         print(f' Max Vertical length: {player} {self.max_vertical_length(player, return_moves=True)}')
         print(f' Max Diagonal length: {player} {self.max_diagnonal_length(player=player, return_move=True)}')
 
-
-
         # Check for winning-cases for player
         for move in self.get_available_moves():
             self.place_disc(row_idx=move[0], col_idx=move[1], player=player)
@@ -410,9 +408,22 @@ class ConnectFour:
                 self.place_disc(row_idx=move[0], col_idx=move[1], player=0)
 
 
+        #check what is the max length of any lines.
         max_length_opponent = max(self.max_horizontal_length(self.invert_player(player), return_moves=False),
-                         self.max_vertical_length(self.invert_player(player), return_moves=False),
-                         self.max_diagnonal_length(self.invert_player(player), return_move=False))
+                                  self.max_vertical_length(self.invert_player(player), return_moves=False),
+                                  self.max_diagnonal_length(self.invert_player(player), return_move=False))
 
-        if self.max_horizontal_length(self.invert_player(player), return_moves=False):
-            return self.max_horizontal_length(self.invert_player(player), return_moves=True)[0]
+        if self.max_horizontal_length(self.invert_player(player), return_moves=False) == max_length_opponent:
+            for move in self.max_horizontal_length(self.invert_player(player), return_moves=True):
+                if move in self.get_available_moves():
+                    return move
+
+        if self.max_vertical_length(self.invert_player(player), return_moves=False) == max_length_opponent:
+            for move in self.max_vertical_length(self.invert_player(player), return_moves=True):
+                if move in self.get_available_moves():
+                    return move
+
+        if self.max_diagnonal_length(self.invert_player(player), return_move=False) == max_length_opponent:
+            for move in self.max_diagnonal_length(self.invert_player(player), return_move=True):
+                if move in self.get_available_moves():
+                    return move
