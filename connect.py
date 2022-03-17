@@ -268,16 +268,15 @@ class ConnectFour:
             if player == BLUE:
                 return False
         else:
-            av_moves = self.get_available_moves()
-            for i in range(len(av_moves)):
+            for move in self.get_available_moves():
 
-                self.place_disc(row_idx=av_moves[i][0], col_idx=av_moves[i][1], player=player)
+                self.place_disc(row_idx=move[0], col_idx=move[1], player=player)
 
                 if not self.can_player_win(self.invert_player(player)):
-                    self.place_disc(row_idx=av_moves[i][0], col_idx=av_moves[i][1], player=0)
+                    self.place_disc(row_idx=move[0], col_idx=move[1], player=0)
                     return True
 
-                self.place_disc(row_idx=av_moves[i][0], col_idx=av_moves[i][1], player=0)
+                self.place_disc(row_idx=move[0], col_idx=move[1], player=0)
 
         return False
 
