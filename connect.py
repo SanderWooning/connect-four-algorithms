@@ -27,6 +27,8 @@ class ConnectFour:
         """
         Print the board in human readable format in the terminal.
         Where red is O and blue is X.
+
+        Color codes are used to give the names a color for better readability
         """
         print("")
         for i in range(self.height):
@@ -75,10 +77,10 @@ class ConnectFour:
         """
         starting_list = []
 
-        for j in range(self.width):
-            for i in range(self.height - 1, -1, -1):
-                if self.board[i][j] == 0:
-                    starting_list.append((i, j))
+        for column in range(self.width):
+            for row in range(self.height - 1, -1, -1):
+                if self.board[row][column] == 0:
+                    starting_list.append((row, column))
                     break
             else:
                 continue
@@ -99,12 +101,12 @@ class ConnectFour:
         :return: True if the player has 4 horizontally connected discs else False
         """
 
-        for i in range(self.height):
-            for j in range(0, self.width - 3):
-                if self.board[i][j] == player \
-                        and self.board[i][j + 1] == player \
-                        and self.board[i][j + 2] == player \
-                        and self.board[i][j + 3] == player:
+        for row in range(self.height):
+            for column in range(0, self.width - 3):
+                if self.board[row][column] == player \
+                        and self.board[row][column + 1] == player \
+                        and self.board[row][column + 2] == player \
+                        and self.board[row][column + 3] == player:
                     return True
 
         else:
@@ -123,12 +125,12 @@ class ConnectFour:
         :return: True if the player has 4 vertically connected discs else False
         """
 
-        for j in range(self.width):
-            for i in range(0, self.height - 3):
-                if self.board[i][j] == player \
-                        and self.board[i + 1][j] == player \
-                        and self.board[i + 2][j] == player \
-                        and self.board[i + 3][j] == player:
+        for column in range(self.width):
+            for row in range(0, self.height - 3):
+                if self.board[row][column] == player \
+                        and self.board[row + 1][column] == player \
+                        and self.board[row + 2][column] == player \
+                        and self.board[row + 3][column] == player:
                     return True
 
         return False
@@ -146,12 +148,12 @@ class ConnectFour:
         :return: True if the player has 4 diagonal connected discs else False
         """
 
-        for i in range(self.height - 3):
-            for j in range(self.width - 3):
-                if array[i][j] == player \
-                        and array[i + 1][j + 1] == player \
-                        and array[i + 2][j + 2] == player \
-                        and array[i + 3][j + 3] == player:
+        for row in range(self.height - 3):
+            for column in range(self.width - 3):
+                if array[row][column] == player \
+                        and array[row + 1][column + 1] == player \
+                        and array[row + 2][column + 2] == player \
+                        and array[row + 3][column + 3] == player:
                     return True
 
         return False
@@ -257,6 +259,7 @@ class ConnectFour:
         :return: True if the player can win, False otherwise
         """
 
+
         if self.has_player_won(player=player):
             return True
         if self.get_game_status() == DRAW:
@@ -279,7 +282,6 @@ class ConnectFour:
         return False
 
     def best_move_greedy(self, player: int) -> typing.Tuple[int, int]:
-
         """
         OPTIONAL. Design a greedy function to determine the best move to play. This
         algorithm involves enumerating all possible moves, and determining
@@ -293,4 +295,12 @@ class ConnectFour:
         :return: The best move according to the function in the form (row_id, col_id)
         """
 
-        return (0,0)
+        #Check for winning-cases for player
+        for move in self.get_available_moves():
+            self.place_disc(row_idx=move[0], col_idx=move[1], player=player)
+            if self.has_player_won(player=player):
+                self.place_disc(row_idx=move[0], col_idx=move[1], player=0)
+                return move
+            else:
+                self.place_disc(row_idx=move[0], col_idx=move[1], player=0)
+
