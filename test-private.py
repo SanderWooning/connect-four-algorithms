@@ -81,54 +81,29 @@ class PrivateTestCF(unittest.TestCase):
 
 
     def test_best_move_greedy_weird(self):
+        # cf = ConnectFour(4,4)
+        # cf.board=np.array([[0,0,0,0],
+        #                    [0,0,0,0],
+        #                    [2,1,0,0],
+        #                    [2,1,0,0]])
+        # bm1 = cf.best_move_greedy(1)
+        # bm2 = cf.best_move_greedy(2)
+        # self.assertEqual(bm1, (1,0))
+        # self.assertEqual(bm2, (1,1))
+        #
+        # cf = ConnectFour(4,4)
+        # cf.board=np.array([[0,0,0,0],
+        #                    [0,0,0,0],
+        #                    [2,2,0,0],
+        #                    [1,1,0,0]])
+        # bm2 = cf.best_move_greedy(2)
+        # self.assertEqual(bm2, (3,2))
+
         cf = ConnectFour(4,4)
         cf.board=np.array([[0,0,0,0],
                            [0,0,0,0],
-                           [2,1,0,0],
-                           [2,1,0,0]])
+                           [0,2,1,0],
+                           [2,1,2,1]])
         bm1 = cf.best_move_greedy(1)
-        bm2 = cf.best_move_greedy(2)
-        self.assertEqual(bm1, (1,0))
-        self.assertEqual(bm2, (1,1))
+        self.assertEqual(bm1, (1,2))
 
-
-        cf = ConnectFour(4,4)
-        cf.board=np.array([[0,0,0,0],
-                           [1,2,0,0],
-                           [1,1,2,0],
-                           [2,1,2,0]])
-        bm1 = cf.best_move_greedy(1)
-        bm2 = cf.best_move_greedy(2)
-        self.assertEqual(bm1, (1,1))
-        self.assertEqual(bm2, (0,0))
-
-    # def test_can_player_win_empty_board(self):
-    #     cf = ConnectFour(4,5)
-    #     cf.board=np.array([[0, 0, 0, 0],
-    #                        [0, 0, 0, 0],
-    #                        [0, 0, 0, 0],
-    #                        [0, 0, 0, 0],
-    #                        [0, 0, 0, 0]])
-    #     self.assertFalse(cf.can_player_win(BLUE))
-    #     self.assertTrue(cf.can_player_win(RED))
-    # #
-    #
-    #
-    # def test_can_player_win_empty_board_45(self):
-    #     cf = ConnectFour(5,4)
-    #     cf.board=np.array([[0, 0, 0, 0, 0],
-    #                        [0, 0, 0, 0, 0],
-    #                        [0, 0, 0, 0, 0],
-    #                        [0, 0, 0, 0, 0]])
-    #     self.assertTrue(cf.can_player_win(BLUE))
-    #     self.assertTrue(cf.can_player_win(RED))
-
-    # def test_can_player_win_empty_board_45(self):
-    #     cf = ConnectFour(5,5)
-    #     cf.board=np.array([[0, 0, 0, 0, 0],
-    #                        [0, 0, 0, 0, 0],
-    #                        [0, 0, 0, 0, 0],
-    #                        [0, 0, 0, 0, 0],
-    #                        [0, 0, 0, 0, 0]])
-    #     self.assertTrue(cf.can_player_win(BLUE))
-    #     self.assertTrue(cf.can_player_win(RED))

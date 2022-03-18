@@ -280,8 +280,30 @@ class ConnectFour:
 
     def max_horizontal_length(self, player: int, return_moves: bool):
 
+        """"
+        A function for the greedy search algorithm
+        A nested for-loop which checks the longest line of HORIZONTALLY connected discs for the given player
+
+        Steps:
+            1. Iterate over all rows
+            2. Iterate over all items within that row.
+            3. Every time a piece is encountered which is equal to player, increment our counting length.
+            4. If counting length has increased in comparison to our starting value (starting_len), reset the moves.
+            5. Create possible moves, which are one LEFT and one RIGHT our sequence of piece which are equal to player.
+            6. Check if created move is a valid move, if so, append to returning_moves.
+            7. Return the length of the longest chain. Or if return_moves is true, return the move which blocks
+            the longest chain.
+
+
+        :param: player: The player for which we check the maximal length.
+        :param: return_moves: A boolean value. If yes, function returns the moves.
+
+        :return: Returns the length of the longest horizontal connect or if return_moves, it returns the moves
+        """
+
         starting_len = 0
         returning_moves = []
+        avail_moves = self.get_available_moves()
 
         for row in range(self.height):
             counting_len = 0
@@ -289,13 +311,19 @@ class ConnectFour:
                 if self.board[row][column] == player:
                     counting_len += 1
 
-                    if counting_len == starting_len:
-                        returning_moves.append((row, column + 1))
-                        returning_moves.append((row, column - starting_len))
-
+                    # Override the returning_moves if the move is longer then the previous sequence
                     if counting_len > starting_len:
+                        returning_moves = []
                         starting_len = counting_len
-                        returning_moves = [(row, column + 1), (row, column - starting_len)]
+
+                    # Append returning_moves if move is as long as the previous sequence
+                    if counting_len == starting_len:
+                        move_1 = (row, column + 1)
+                        move_2 = (row, column - starting_len)
+                        if move_1 in avail_moves:
+                            returning_moves.append(move_1)
+                        if move_2 in avail_moves:
+                            returning_moves.append(move_2)
 
                 else:
                     counting_len = 0
@@ -308,8 +336,29 @@ class ConnectFour:
 
     def max_vertical_length(self, player: int, return_moves: bool):
 
+        """"
+        A function for the greedy search algorithm
+        A nested for-loop which checks the longest line of VERTICALLY connected discs for the given player
+
+        Steps:
+            1. Iterate over all columns
+            2. Iterate over all items within that column.
+            3. Every time a piece is encountered which is equal to player, increment our counting length.
+            4. If counting length has increased in comparison to our starting value (starting_len), reset the moves.
+            5. Create possible moves, which are one above and one below our sequence of piece which are equal to player.
+            6. Check if created move is a valid move, if so, append to returning_moves.
+            7. Return the length of the longest chain. Or if return_moves is true, return the move which blocks
+            the longest chain.
+
+        :param: player: The player for which we check the maximal length.
+        :param: return_moves: A boolean value. If yes, function returns the moves.
+
+        :return: Returns the length of the longest horizontal connect or if return_moves is true, it returns the moves.
+        """
+
         starting_len = 0
         returning_moves = []
+        avail_moves = self.get_available_moves()
 
         for column in range(self.width):
             counting_len = 0
@@ -317,13 +366,19 @@ class ConnectFour:
                 if self.board[row][column] == player:
                     counting_len += 1
 
-                    if counting_len == starting_len:
-                        returning_moves.append((row + 1, column))
-                        returning_moves.append((row - starting_len, column))
-
+                    # Override the returning_moves if the move is longer then the previous sequence
                     if counting_len > starting_len:
+                        returning_moves = []
                         starting_len = counting_len
-                        returning_moves = [(row + 1, column), (row - starting_len, column)]
+
+                    # Append returning_moves if move is as long as the previous sequence
+                    if counting_len == starting_len:
+                        move_1 = (row + 1, column)
+                        move_2 = (row - starting_len, column)
+                        if move_1 in avail_moves:
+                            returning_moves.append(move_1)
+                        if move_2 in avail_moves:
+                            returning_moves.append(move_2)
                 else:
                     counting_len = 0
 
@@ -333,49 +388,73 @@ class ConnectFour:
         else:
             return starting_len
 
-    def max_diagnonal_length(self, player: int, return_move: bool):
+    def max_diagnonal_length(self, player: int, flip_array: bool, return_moves: bool):
+
+        """"
+        A function for the greedy search algorithm
+        A nested for-loop which checks the longest line of the DIAGONAL and the ANTI-DIAGONAL for connected discs
+        for the given player
+
+        Steps:
+            1. Iterate over the bottom row.
+            2. Iterate over all elements in the bottom row.
+            3. Iterate the possible length of the diagonal, which is based on the width of the board and
+            it's current index.
+            4.
+
+        :param: player: The player for which we check the maximal length.
+        :param: array: The board array. Given so we can input a flipped board.
+        :param: return_moves: A boolean value. If yes, function returns the moves.
+
+        :return: Returns the length of the longest horizontal connect or if return_moves, it returns the moves
+        """
 
         starting_len = 0
-        returning_moves = []
+        diagonal_returning_moves = []
+        avail_moves = self.get_available_moves()
 
-        for column in range(self.width - 3):
+        if flip_array:
+            self.board = np.fliplr(self.board)
+
+        self.print_board()
+
+        for row in range(self.height - 3):
             counting_len = 0
-            for row in range(self.height):
-                if self.board[row][row + column] == player:
-                    counting_len += 1
+            for column in range(self.width):
+                for index in range(self.width - column):
+                    print( f'Current Player = {player} ,Cordinate: {((row + index), (column + index))}, value: {self.board[row + index][column+ index]}')
+                    print(f"Counting_len: {counting_len}")
+                    if self.board[row + index][column + index] == player:
+                        print()
+                        counting_len += 1
 
-                    if counting_len == starting_len:
-                        returning_moves.append((row + 1, row + column + 1))
-                        returning_moves.append((row - starting_len, row + column - starting_len))
+                        if counting_len > starting_len:
+                            diagonal_returning_moves = []
+                            starting_len = counting_len
 
-                    if counting_len > starting_len:
-                        starting_len = counting_len
-                        returning_moves = [(row + 1, row + column + 1),
-                                           (row - starting_len, row + column - starting_len)]
+                        if counting_len == starting_len:
+                            move_1 = (index + 1, index + 1)
+                            move_2 = (index - starting_len, index - starting_len)
+                            if flip_array:
+                                print(f"move1 {move_1}, move 2 {move_2}")
+                                move_1 = (move_1[0], (self.width - 1 - move_1[1]))
+                                move_2 = (move_2[0], (self.width - 1 - move_2[1]))
 
-                else:
-                    counting_len = 0
+                                print(f"move1 {move_1}, move 2 {move_2}")
 
-        for column in range(self.width - 3):
-            counting_len = 0
-            for row in range(self.height):
-                if self.board[row][self.width - 1 - row] == player:
-                    counting_len += 1
+                            if move_1 in avail_moves:
+                                diagonal_returning_moves.append(move_1)
+                            if move_2 in avail_moves:
+                                diagonal_returning_moves.append(move_2)
 
-                    if counting_len == starting_len:
-                        returning_moves.append((row + 1, row + column + 1))
-                        returning_moves.append((row - starting_len, row + column - starting_len))
+                    else:
+                        counting_len = 0
 
-                    if counting_len > starting_len:
-                        starting_len = counting_len
-                        returning_moves = [(row + 1, row + column + 1),
-                                           (row - starting_len, row + column - starting_len)]
+        if flip_array:
+            self.board = np.fliplr(self.board)
 
-                else:
-                    counting_len = 0
-
-        if return_move:
-            return returning_moves
+        if return_moves:
+            return diagonal_returning_moves
 
         else:
             return starting_len
@@ -391,12 +470,16 @@ class ConnectFour:
         This way, the opponent can hopefully not win, and we win if we can in 1 move. It may be a good idea to formulate
         new functions that are slight alterations of, e.g., is_horizontal_win, is_vertical_win, and is_diagonal_win.
 
+        Steps:
+            1. Check if any of the legal moves are winning moves.
+            2. Call multiple length checking functions to get the max length of the board for the inverted played.
+            3. Check which of the function is the longest and call it's given moves.
+            4. If any of the moves are in the legal moves, return
+            5. Else go to the next moves and functions.
+
         :return: The best move according to the function in the form (row_id, col_id)
         """
 
-        print(f' Max horizontal length:{player}  {self.max_horizontal_length(player, return_moves=True)}')
-        print(f' Max Vertical length: {player} {self.max_vertical_length(player, return_moves=True)}')
-        print(f' Max Diagonal length: {player} {self.max_diagnonal_length(player=player, return_move=True)}')
 
         # Check for winning-cases for player
         for move in self.get_available_moves():
@@ -407,26 +490,41 @@ class ConnectFour:
             else:
                 self.place_disc(row_idx=move[0], col_idx=move[1], player=0)
 
+        horizontal_max = self.max_horizontal_length(self.invert_player(player), return_moves=False)
+        vertical_max = self.max_vertical_length(self.invert_player(player),     return_moves=False)
+        diagonal_max = self.max_diagnonal_length(self.invert_player(player), flip_array=False, return_moves=False)
+        a_diagonal_max = self.max_diagnonal_length(self.invert_player(player), flip_array=True, return_moves=False)
 
 
-        #check what is the max length of any lines.
-        max_length_opponent = max(self.max_horizontal_length(self.invert_player(player), return_moves=False),
-                                  self.max_vertical_length(self.invert_player(player), return_moves=False),
-                                  self.max_diagnonal_length(self.invert_player(player), return_move=False))
 
-        print(max_length_opponent)
+        horizontal_moves = self.max_horizontal_length(self.invert_player(player), return_moves=True)
+        vertical_moves = self.max_vertical_length(self.invert_player(player), return_moves=True)
+        diagonal_moves = self.max_diagnonal_length(self.invert_player(player), flip_array=False, return_moves=True)
+        a_diagonal_moves = self.max_diagnonal_length(self.invert_player(player), flip_array=True, return_moves=True)
 
-        if self.max_horizontal_length(self.invert_player(player), return_moves=False) == max_length_opponent:
-            for move in self.max_horizontal_length(self.invert_player(player), return_moves=True):
-                if move in self.get_available_moves():
-                    return move
+        max_length_opponent = max(horizontal_max, vertical_max, diagonal_max, a_diagonal_max)
 
-        if self.max_vertical_length(self.invert_player(player), return_moves=False) == max_length_opponent:
-            for move in self.max_vertical_length(self.invert_player(player), return_moves=True):
-                if move in self.get_available_moves():
-                    return move
 
-        if self.max_diagnonal_length(self.invert_player(player), return_move=False) == max_length_opponent:
-            for move in self.max_diagnonal_length(self.invert_player(player), return_move=True):
-                if move in self.get_available_moves():
-                    return move
+        print("")
+        print(f'Current player: {player}. max length of player {self.invert_player(player)} is {max_length_opponent}')
+        print(f'Max horizontal Length: {horizontal_max}, vetical: {vertical_max}, diagonal_max: {diagonal_max}, adiagnonal: {a_diagonal_max}')
+        print(f'horizontal_moves: {horizontal_moves}, vertical: {vertical_moves}, diagonal_moves: {diagonal_moves}, adiagonal: {a_diagonal_moves}')
+
+
+        # Check which function gives the longest length for the opponent.
+        # Then it returns the first move which is in available moves.
+
+
+        for max_length_loop in range(max_length_opponent, 0, -1):
+            if horizontal_max == max_length_loop and len(horizontal_moves) > 0:
+                return horizontal_moves[0]
+
+            if vertical_max == max_length_loop and len(vertical_moves) > 0:
+                return vertical_moves[0]
+
+            if diagonal_max == max_length_loop and len(diagonal_moves) > 0:
+                return diagonal_moves[0]
+
+            if a_diagonal_max == max_length_loop and len(a_diagonal_moves) > 0:
+                return a_diagonal_moves[0]
+
