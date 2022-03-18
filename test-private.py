@@ -79,6 +79,29 @@ class PrivateTestCF(unittest.TestCase):
         self.assertTrue(cf.is_diagonal_win(BLUE))
         self.assertFalse(cf.is_diagonal_win(RED))
 
+
+    def test_best_move_greedy_weird(self):
+        cf = ConnectFour(4,4)
+        cf.board=np.array([[0,0,0,0],
+                           [0,0,0,0],
+                           [2,1,0,0],
+                           [2,1,0,0]])
+        bm1 = cf.best_move_greedy(1)
+        bm2 = cf.best_move_greedy(2)
+        self.assertEqual(bm1, (1,0))
+        self.assertEqual(bm2, (1,1))
+
+
+        cf = ConnectFour(4,4)
+        cf.board=np.array([[0,0,0,0],
+                           [1,2,0,0],
+                           [1,1,2,0],
+                           [2,1,2,0]])
+        bm1 = cf.best_move_greedy(1)
+        bm2 = cf.best_move_greedy(2)
+        self.assertEqual(bm1, (1,1))
+        self.assertEqual(bm2, (0,0))
+
     # def test_can_player_win_empty_board(self):
     #     cf = ConnectFour(4,5)
     #     cf.board=np.array([[0, 0, 0, 0],

@@ -408,10 +408,13 @@ class ConnectFour:
                 self.place_disc(row_idx=move[0], col_idx=move[1], player=0)
 
 
+
         #check what is the max length of any lines.
         max_length_opponent = max(self.max_horizontal_length(self.invert_player(player), return_moves=False),
                                   self.max_vertical_length(self.invert_player(player), return_moves=False),
                                   self.max_diagnonal_length(self.invert_player(player), return_move=False))
+
+        print(max_length_opponent)
 
         if self.max_horizontal_length(self.invert_player(player), return_moves=False) == max_length_opponent:
             for move in self.max_horizontal_length(self.invert_player(player), return_moves=True):
