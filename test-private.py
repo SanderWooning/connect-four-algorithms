@@ -15,7 +15,7 @@ class PrivateTestCF(unittest.TestCase):
                              [RED,RED,RED,RED],
                              [RED,RED,RED,RED],
                              ])
-        self.assertTrue(len(cf.get_available_moves()) == 0 )
+        self.assertTrue(len(cf.get_available_moves()) == 0)
 
     def test_win_asymatric_board(self):
         cf = ConnectFour(6, 4)
@@ -51,7 +51,11 @@ class PrivateTestCF(unittest.TestCase):
 
     def test_large_diagonal_check(self):
         """
-        A testcase for large diagonal wins. . Floating doesn't affect test-case.
+        A testcase for large diagonal wins.
+        Floating discs don't affect test-case.
+
+        1. First
+
         :return:
         """
 
@@ -81,6 +85,19 @@ class PrivateTestCF(unittest.TestCase):
 
 
     def test_best_move_greedy_weird(self):
+        """
+        Greedy search test-cases for shorter sequences such as a 2-long sequence.
+
+        Three different test-cases are used.
+
+        1. Checks for blocking move against a 2-long vertical sequence
+        2. Checks for a blocking move against a 2-long horizontal sequence.
+        3. Check for a blocking move against a 2-long anti-diagonal sequence.
+
+        :return:
+        """
+
+
         cf = ConnectFour(4,4)
         cf.board=np.array([[0,0,0,0],
                            [0,0,0,0],

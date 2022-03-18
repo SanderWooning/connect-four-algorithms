@@ -413,17 +413,17 @@ class ConnectFour:
         diagonal_returning_moves = []
         avail_moves = self.get_available_moves()
 
+
+        #Flip the board for checking the anti-diagonal.
         if flip_array:
             self.board = np.fliplr(self.board)
 
-        self.print_board()
+
 
         for row in range(self.height - 3):
             counting_len = 0
             for column in range(self.width):
                 for index in range(self.width - column):
-                    print( f'Current Player = {player} ,Cordinate: {((row + index), (column + index))}, value: {self.board[row + index][column+ index]}')
-                    print(f"Counting_len: {counting_len}")
                     if self.board[row + index][column + index] == player:
                         print()
                         counting_len += 1
@@ -432,16 +432,19 @@ class ConnectFour:
                             diagonal_returning_moves = []
                             starting_len = counting_len
 
+                        # If the counting-sequence is as long or longer then the starting-sequence
+                        # Build two tupples which are the moves one at the bottom of the diagonal and one on the top.
                         if counting_len == starting_len:
                             move_1 = (index + 1, index + 1)
                             move_2 = (index - starting_len, index - starting_len)
+
+                            # If the array is flipped, the move needs to be flipped.
+                            # This is done by subtracting it from the width of the board
                             if flip_array:
-                                print(f"move1 {move_1}, move 2 {move_2}")
                                 move_1 = (move_1[0], (self.width - 1 - move_1[1]))
                                 move_2 = (move_2[0], (self.width - 1 - move_2[1]))
 
-                                print(f"move1 {move_1}, move 2 {move_2}")
-
+                            # Check if the moves are valid moves. If so, add them to the storage.
                             if move_1 in avail_moves:
                                 diagonal_returning_moves.append(move_1)
                             if move_2 in avail_moves:
@@ -450,6 +453,7 @@ class ConnectFour:
                     else:
                         counting_len = 0
 
+        # Unflip the board.
         if flip_array:
             self.board = np.fliplr(self.board)
 
@@ -480,7 +484,6 @@ class ConnectFour:
         :return: The best move according to the function in the form (row_id, col_id)
         """
 
-
         # Check for winning-cases for player
         for move in self.get_available_moves():
             self.place_disc(row_idx=move[0], col_idx=move[1], player=player)
@@ -490,31 +493,24 @@ class ConnectFour:
             else:
                 self.place_disc(row_idx=move[0], col_idx=move[1], player=0)
 
+        # Get all maximal lengths of the other player of the horizontal, vertical, diagonal and anti-diagonal sequences.
         horizontal_max = self.max_horizontal_length(self.invert_player(player), return_moves=False)
-        vertical_max = self.max_vertical_length(self.invert_player(player),     return_moves=False)
+        vertical_max = self.max_vertical_length(self.invert_player(player), return_moves=False)
         diagonal_max = self.max_diagnonal_length(self.invert_player(player), flip_array=False, return_moves=False)
         a_diagonal_max = self.max_diagnonal_length(self.invert_player(player), flip_array=True, return_moves=False)
 
-
-
+        # Get all available blocking the longest sequence of the other player.
         horizontal_moves = self.max_horizontal_length(self.invert_player(player), return_moves=True)
         vertical_moves = self.max_vertical_length(self.invert_player(player), return_moves=True)
         diagonal_moves = self.max_diagnonal_length(self.invert_player(player), flip_array=False, return_moves=True)
         a_diagonal_moves = self.max_diagnonal_length(self.invert_player(player), flip_array=True, return_moves=True)
 
+        # Get the longest length
         max_length_opponent = max(horizontal_max, vertical_max, diagonal_max, a_diagonal_max)
-
-
-        print("")
-        print(f'Current player: {player}. max length of player {self.invert_player(player)} is {max_length_opponent}')
-        print(f'Max horizontal Length: {horizontal_max}, vetical: {vertical_max}, diagonal_max: {diagonal_max}, adiagnonal: {a_diagonal_max}')
-        print(f'horizontal_moves: {horizontal_moves}, vertical: {vertical_moves}, diagonal_moves: {diagonal_moves}, adiagonal: {a_diagonal_moves}')
 
 
         # Check which function gives the longest length for the opponent.
         # Then it returns the first move which is in available moves.
-
-
         for max_length_loop in range(max_length_opponent, 0, -1):
             if horizontal_max == max_length_loop and len(horizontal_moves) > 0:
                 return horizontal_moves[0]
@@ -527,4 +523,3 @@ class ConnectFour:
 
             if a_diagonal_max == max_length_loop and len(a_diagonal_moves) > 0:
                 return a_diagonal_moves[0]
-
