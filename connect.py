@@ -400,10 +400,17 @@ class ConnectFour:
             2. Iterate over all elements in the bottom row.
             3. Iterate the possible length of the diagonal, which is based on the width of the board and
             it's current index.
-            4.
+            4. Every time a piece is encountered which is equal to player, increment our counting length.
+            5. If counting length has increased in comparison to our starting value (starting_len), reset the moves.
+            6. Create possible moves, which are (one down and one left) and (one up and one right) regarding the
+            current diagonal-sequence of piece which are equal to player.
+            7. Check if created move is a valid move, if so, append to returning_moves.
+            8. Return the length of the longest chain. Or if return_moves is true, return the move which blocks
+            the longest chain.
 
         :param: player: The player for which we check the maximal length.
-        :param: array: The board array. Given so we can input a flipped board.
+        :param: flip_array: A boolean value. If yes, array gets mirrored along the vertical axis.
+        Used for analyzing the anti-diagonal
         :param: return_moves: A boolean value. If yes, function returns the moves.
 
         :return: Returns the length of the longest horizontal connect or if return_moves, it returns the moves
@@ -413,19 +420,15 @@ class ConnectFour:
         diagonal_returning_moves = []
         avail_moves = self.get_available_moves()
 
-
-        #Flip the board for checking the anti-diagonal.
+        # Flip the board for checking the anti-diagonal.
         if flip_array:
             self.board = np.fliplr(self.board)
-
-
 
         for row in range(self.height - 3):
             counting_len = 0
             for column in range(self.width):
                 for index in range(self.width - column):
                     if self.board[row + index][column + index] == player:
-                        print()
                         counting_len += 1
 
                         if counting_len > starting_len:
@@ -507,7 +510,6 @@ class ConnectFour:
 
         # Get the longest length
         max_length_opponent = max(horizontal_max, vertical_max, diagonal_max, a_diagonal_max)
-
 
         # Check which function gives the longest length for the opponent.
         # Then it returns the first move which is in available moves.
